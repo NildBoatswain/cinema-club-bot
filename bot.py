@@ -11,7 +11,7 @@ import asyncio
 from datetime import datetime, timedelta
 
 import aiohttp
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from telegram import Update, Poll, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -94,11 +94,10 @@ async def translate_to_ru(text: str) -> str:
     if not text or text == "N/A":
         return text
     try:
-        translator = Translator()
         result = await asyncio.get_event_loop().run_in_executor(
-            None, lambda: translator.translate(text, dest="ru")
+            None, lambda: GoogleTranslator(source="auto", target="ru").translate(text)
         )
-        return result.text
+        return result
     except Exception as e:
         logger.warning(f"Перевод не удался: {e}")
         return text  # возвращаем оригинал если перевод упал
